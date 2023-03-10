@@ -16,7 +16,7 @@ public class WordRepoFile implements WordRepo {
   RandomGenerator randomGen = new Random();
 
   @PostConstruct
-  public void popuplateWordsFromFile() {
+  public void populateWordsFromFile() {
     var in =
         Thread.currentThread()
             .getContextClassLoader()

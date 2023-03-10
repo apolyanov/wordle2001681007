@@ -1,12 +1,14 @@
 package pu.fmi.wordle.logic;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.UUID;
 import org.springframework.stereotype.Component;
 import pu.fmi.wordle.model.Game;
 import pu.fmi.wordle.model.GameRepo;
+import pu.fmi.wordle.model.Guess;
 import pu.fmi.wordle.model.WordRepo;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
 
 @Component
 public class GameServiceImpl implements GameService {
@@ -38,8 +40,21 @@ public class GameServiceImpl implements GameService {
   }
 
   @Override
-  public Game makeGuess(String id, String word) {
-    // TODO: implement
-    return null;
+  public Game makeGuess(String id, String word) throws GameNotFoundException {
+    Game game = gameRepo.get(id);
+
+    if (game == null) {
+      throw new GameNotFoundException(id);
+    }
+
+    if (!wordRepo.exists(word)) {
+      throw new UnknownWordException(word);
+    }
+
+    Guess newGuess = new Guess();
+    newGuess.checkGuess(word, game.getWord());
+
+    game.getGuesses().add(newGuess);
+    return game;
   }
 }
